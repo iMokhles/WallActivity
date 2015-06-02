@@ -10,6 +10,14 @@
 static BOOL isResizeEnabled;
 #define isResizeEnabledKey @"enableResize"
 
+static BOOL isResizeEnabledBOOL()
+{
+    NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:kPreferencesPath];
+    NSNumber *isResizeEnabledNU = tweakSettings[isResizeEnabledKey];
+    isResizeEnabled = isResizeEnabledNU ? [isResizeEnabledNU boolValue] : 1;
+    return isResizeEnabled;
+}
+
 static NSBundle* getPhotosBundle() {
     return [NSBundle bundleWithPath:@"/System/Library/Frameworks/PhotosUI.framework"];
 }
@@ -103,13 +111,11 @@ extern NSString *PLLocalizedFrameworkString(NSString *key, NSString *comment);
             }
         }
 
-        NSDictionary *tweakSettings = [NSDictionary dictionaryWithContentsOfFile:kPreferencesPath];
-        NSNumber *isResizeEnabledNU = tweakSettings[isResizeEnabledKey];
-        isResizeEnabled = [isResizeEnabledNU boolValue];
+        
         PLStaticWallpaperImageViewController *wallpaperViewController;
         CGSize newSize = [UIScreen mainScreen].bounds.size;
 
-        if (isResizeEnabled == YES) {
+        if (isResizeEnabledBOOL() == YES) {
             UIGraphicsBeginImageContext(newSize);
             [sharedImage drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
             UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();    
